@@ -1,5 +1,6 @@
-import { DataTypes, Model, Optional } from "sequelize";
+import { DataTypes, Model, Optional, Sequelize, UUIDV4 } from "sequelize";
 import { sequelize } from "../config/connectDatabase";
+import { v4 as uuidv4 } from "uuid";
 
 export interface CategoryAttributes {
   id: string;
@@ -10,6 +11,8 @@ export interface CategoryAttributes {
   isSale: boolean;
   children?: CategoryAttributes[];
   leafNode?: CategoryAttributes[];
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 interface CategoryCreationAttributes
@@ -18,8 +21,8 @@ interface CategoryCreationAttributes
 interface CategoryInstance
   extends Model<CategoryAttributes, CategoryCreationAttributes>,
     CategoryAttributes {
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 const Category = sequelize.define<CategoryInstance>("Category", {
@@ -28,6 +31,7 @@ const Category = sequelize.define<CategoryInstance>("Category", {
     autoIncrement: false,
     primaryKey: true,
     type: DataTypes.UUID,
+    defaultValue: UUIDV4,
     unique: true,
   },
   name: {
@@ -35,8 +39,8 @@ const Category = sequelize.define<CategoryInstance>("Category", {
     type: DataTypes.TEXT,
   },
   parent_id: {
-    allowNull: false,
-    type: DataTypes.INTEGER,
+    allowNull: true,
+    type: DataTypes.UUID,
   },
   slug: {
     allowNull: true,
