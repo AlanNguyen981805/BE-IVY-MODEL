@@ -1,7 +1,6 @@
 import { DataTypes, Model, Optional, Sequelize, UUID, UUIDV4 } from "sequelize";
 import { sequelize } from "../config/connectDatabase";
-import { v4 as uuidv4 } from "uuid";
-import Product from "./product";
+import Product from "./product.model";
 
 export interface CategoryAttributes {
   id: string;
@@ -10,6 +9,7 @@ export interface CategoryAttributes {
   slug: string;
   link: string;
   isSale: boolean;
+  isActive?: boolean;
   children?: CategoryAttributes[];
   leafNode?: CategoryAttributes[];
   createdAt?: string;
@@ -50,6 +50,10 @@ const Category = sequelize.define<CategoryInstance>("Category", {
   link: {
     allowNull: true,
     type: DataTypes.TEXT,
+  },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
   },
   isSale: {
     allowNull: true,

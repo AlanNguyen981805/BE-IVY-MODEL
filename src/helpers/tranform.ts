@@ -1,4 +1,4 @@
-import { CategoryAttributes } from "../models/category";
+import { CategoryAttributes } from "../models/category.model";
 import { ICategory } from "../types/category.type";
 
 export const buildTree = (

@@ -1,7 +1,7 @@
 //@ts-ignore
 import { Request } from "express";
 import { buildTree } from "../helpers/tranform";
-import Category, { CategoryAttributes } from "../models/category";
+import Category, { CategoryAttributes } from "../models/category.model";
 import { IResponse } from "../types/base";
 
 export const createCategoryService = (req: Request) =>

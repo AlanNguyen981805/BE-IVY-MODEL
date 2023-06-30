@@ -8,6 +8,8 @@ export const DOMAIN = {
   PRODUCT: api + "/products",
   SIZE: api + "/size",
   COLOR: api + "/color",
+  SLIDER: api + "/slider",
+  SETTING: api + "/setting"
 };
 
 export const INFO_RESPONSE = {

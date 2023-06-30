@@ -1,10 +1,10 @@
 import { Request } from "express";
-import Color from "../models/color";
-import Product from "../models/product";
-import Size from "../models/size";
+import Color from "../models/color.model";
+import Product from "../models/product.model";
+import Size from "../models/size.model";
 import { IAttribute, IBodyProduct } from "../types/product.type";
-import ProductColor, { ProductColorAttributes } from "../models/productColor";
-import ProductSize, { ProductSizeAttributes } from "../models/productSize";
+import ProductColor, { ProductColorAttributes } from "../models/productColor.model";
+import ProductSize, { ProductSizeAttributes } from "../models/productSize.model";
 import { v4 as uuidV4 } from "uuid";
 import { sequelize } from "../config/connectDatabase";
 

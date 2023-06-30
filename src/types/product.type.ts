@@ -1,4 +1,4 @@
-import { ProductAttributes } from "../models/product";
+import { ProductAttributes } from "../models/product.model";
 
 export interface IBodyProduct extends ProductAttributes {
   attributes: IAttribute[];
