@@ -1,7 +1,7 @@
 import { DataTypes, Model, Optional, UUID, UUIDV4 } from "sequelize";
 import { sequelize } from "../config/connectDatabase";
-import Color from "./color";
-import ProductColor from "./productColor";
+import Color from "./color.model";
+import ProductColor from "./productColor.model";
 
 export interface ProductAttributes {
   id?: string;

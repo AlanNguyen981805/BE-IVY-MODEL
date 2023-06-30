@@ -1,27 +1,26 @@
 import { DataTypes, Model, Optional, Sequelize, UUID, UUIDV4 } from "sequelize";
 import { sequelize } from "../config/connectDatabase";
-import Size from "./size";
+import Size from "./size.model";
 
-export interface ColorAttributes {
+export interface SettingAttributes {
   id: string;
-  name: string;
-  code: string;
-  isActive: boolean;
+  page: object;
+  isActive?: boolean;
   createdAt?: string;
   updatedAt?: string;
 }
 
-interface ColorCreationAttributes extends Optional<ColorAttributes, "id"> {}
+interface SettingCreationAttributes extends Optional<SettingAttributes, "id"> {}
 
-interface ColorInstance
-  extends Model<ColorAttributes, ColorCreationAttributes>,
-    ColorAttributes {
+interface SettingInstance
+  extends Model<SettingAttributes, SettingCreationAttributes>,
+    SettingAttributes {
   createdAt?: string;
   updatedAt?: string;
 }
 
-const Color = sequelize.define<ColorInstance>(
-  "Color",
+const Setting = sequelize.define<SettingInstance>(
+  "Setting",
   {
     id: {
       allowNull: false,
@@ -31,11 +30,8 @@ const Color = sequelize.define<ColorInstance>(
       defaultValue: UUIDV4,
       unique: true,
     },
-    name: {
-      type: DataTypes.STRING,
-    },
-    code: {
-      type: DataTypes.STRING,
+    page: {
+      type: DataTypes.JSONB,
     },
     isActive: {
       type: DataTypes.BOOLEAN,
@@ -43,20 +39,20 @@ const Color = sequelize.define<ColorInstance>(
     },
   },
   {
-    tableName: "Colors",
+    tableName: "Settings",
   }
 );
 
-Color.belongsToMany(Size, {
+Setting.belongsToMany(Size, {
   through: "ProductSize",
-  foreignKey: "colorId",
+  foreignKey: "SettingId",
   otherKey: "sizeId",
   as: "sizes",
 });
-Size.belongsToMany(Color, {
+Size.belongsToMany(Setting, {
   through: "ProductSize",
   foreignKey: "sizeId",
-  otherKey: "colorId",
-  as: "colors",
+  otherKey: "SettingId",
+  as: "Settings",
 });
-export default Color;
+export default Setting;

@@ -1,5 +1,5 @@
 import { Request } from "express";
-import Color, { ColorAttributes } from "../models/color";
+import Color, { ColorAttributes } from "../models/color.model";
 
 export const createColorService = (req: Request) =>
   new Promise(async (resolve, reject) => {

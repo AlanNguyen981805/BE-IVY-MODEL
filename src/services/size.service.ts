@@ -1,6 +1,6 @@
 //@ts-ignore
 import { Request } from "express";
-import Size from "../models/size";
+import Size from "../models/size.model";
 
 export const createSizeService = (req: Request) =>
   new Promise(async (resolve, reject) => {
