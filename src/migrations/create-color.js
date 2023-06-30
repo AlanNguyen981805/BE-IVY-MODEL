@@ -1,35 +1,27 @@
 'use strict';
 
-const { UUIDV4 } = require('sequelize');
+const { UUIDV4, UUID } = require('sequelize');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Categories', {
+    await queryInterface.createTable('Colors', {
       id: {
         allowNull: false,
         autoIncrement: false,
         primaryKey: true,
         type: Sequelize.UUID,
-        defaultValue: UUIDV4,
+        defaultValue: UUID
       },
       name: {
         type: Sequelize.STRING
       },
-      parent_id: {
-        type: Sequelize.UUID,
-        allowNull: true,
-        defaultValue: null
+      code: {
+        type: Sequelize.STRING,
       },
-      slug: {
-        type: Sequelize.STRING
-      },
-      link: {
-        type: Sequelize.STRING
-      },
-      isSale: {
+      isActive: {
         type: Sequelize.BOOLEAN,
-        allowNull: true
+        defaultValue: false,
       },
       createdAt: {
         allowNull: false,
@@ -42,6 +34,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Categories');
+    await queryInterface.dropTable('Colors');
   }
 };

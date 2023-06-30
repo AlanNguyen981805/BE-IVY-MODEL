@@ -1,6 +1,7 @@
-import { DataTypes, Model, Optional, Sequelize, UUIDV4 } from "sequelize";
+import { DataTypes, Model, Optional, Sequelize, UUID, UUIDV4 } from "sequelize";
 import { sequelize } from "../config/connectDatabase";
 import { v4 as uuidv4 } from "uuid";
+import Product from "./product";
 
 export interface CategoryAttributes {
   id: string;
@@ -54,6 +55,11 @@ const Category = sequelize.define<CategoryInstance>("Category", {
     allowNull: true,
     type: DataTypes.BOOLEAN,
   },
+});
+
+Category.hasMany(Product, {
+  foreignKey: "cateId",
+  as: "products",
 });
 
 export default Category;
