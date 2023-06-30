@@ -5,6 +5,9 @@ const api = "/" + prefixApi + "/" + versionApi;
 
 export const DOMAIN = {
   CATEGORIES: api + "/categories",
+  PRODUCT: api + "/products",
+  SIZE: api + "/size",
+  COLOR: api + "/color",
 };
 
 export const INFO_RESPONSE = {

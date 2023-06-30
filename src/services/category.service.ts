@@ -13,7 +13,7 @@ export const createCategoryService = (req: Request) =>
           error: 0,
           message: "Không đủ trường",
         });
-        return
+        return;
       }
       const newCategory = await Category.create({
         name,
@@ -43,6 +43,9 @@ export const getCategoriesService = () =>
         data: tree,
       });
     } catch (error) {
+      console.log("error :>> ", error);
       reject(error);
     }
   });
+
+
