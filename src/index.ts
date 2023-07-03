@@ -1,6 +1,7 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import initRouter from './routes';
+import cors from "cors";
 import connectDb from './config/connectDatabase';
 
 dotenv.config();
@@ -8,6 +9,12 @@ dotenv.config();
 const app: Express = express();
 const port = process.env.PORT;
 
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || 'http://localhost:3000',
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

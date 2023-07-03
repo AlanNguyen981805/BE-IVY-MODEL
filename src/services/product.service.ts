@@ -3,10 +3,15 @@ import Color from "../models/color.model";
 import Product from "../models/product.model";
 import Size from "../models/size.model";
 import { IAttribute, IBodyProduct } from "../types/product.type";
-import ProductColor, { ProductColorAttributes } from "../models/productColor.model";
-import ProductSize, { ProductSizeAttributes } from "../models/productSize.model";
+import ProductColor, {
+  ProductColorAttributes,
+} from "../models/productColor.model";
+import ProductSize, {
+  ProductSizeAttributes,
+} from "../models/productSize.model";
 import { v4 as uuidV4 } from "uuid";
 import { sequelize } from "../config/connectDatabase";
+import { Op, Sequelize } from "sequelize";
 
 export const getProductsService = (req: Request) =>
   new Promise(async (resolve, reject) => {
@@ -48,7 +53,10 @@ export const getProductsService = (req: Request) =>
                 model: Size,
                 attributes: ["id", "name", "code"],
                 as: "sizes",
-                through: { attributes: ["quantity"], as: "stock" },
+                through: {
+                  attributes: ["productId", "quantity", "colorId", "id"],
+                  as: "stock",
+                },
               },
             ],
           },
@@ -90,6 +98,7 @@ export const createProductService = async (req: Request) => {
         attributes,
         idProduct
       );
+      console.log(productSize);
       await ProductColor.bulkCreate(productColor, { transaction });
       await ProductSize.bulkCreate(productSize, { transaction });
     }

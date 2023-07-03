@@ -42,17 +42,4 @@ const Setting = sequelize.define<SettingInstance>(
     tableName: "Settings",
   }
 );
-
-Setting.belongsToMany(Size, {
-  through: "ProductSize",
-  foreignKey: "SettingId",
-  otherKey: "sizeId",
-  as: "sizes",
-});
-Size.belongsToMany(Setting, {
-  through: "ProductSize",
-  foreignKey: "sizeId",
-  otherKey: "SettingId",
-  as: "Settings",
-});
 export default Setting;

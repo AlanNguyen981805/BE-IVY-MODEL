@@ -2,6 +2,8 @@ import { DataTypes, Model, Optional, UUID, UUIDV4 } from "sequelize";
 import { sequelize } from "../config/connectDatabase";
 import Color from "./color.model";
 import ProductColor from "./productColor.model";
+import ProductSize from "./productSize.model";
+import Size from "./size.model";
 
 export interface ProductAttributes {
   id?: string;
@@ -97,7 +99,11 @@ Product.belongsToMany(Color, {
 Color.belongsToMany(Product, {
   through: ProductColor,
   foreignKey: "colorId",
-  as: "products",
+  as: "Product",
 });
+
+ProductSize.belongsTo(Product, { foreignKey: "productId" });
+// Product.belongsToMany(Size, { through: ProductSize, foreignKey: 'productId', as: "Product" });
+// Size.belongsToMany(Product, { through: ProductSize, foreignKey: 'productId', as: 'Product' });
 
 export default Product;

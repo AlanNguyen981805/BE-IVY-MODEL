@@ -1,5 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/connectDatabase";
+import Size from "./size.model";
+import Product from "./product.model";
 
 export interface ProductSizeAttributes {
   id: string;
@@ -27,7 +29,7 @@ const ProductSize = sequelize.define<ProductSizeInstance>("ProductSize", {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: "Sizes",
+      model: "Size",
       key: "id",
     },
   },
@@ -35,7 +37,7 @@ const ProductSize = sequelize.define<ProductSizeInstance>("ProductSize", {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: "Products",
+      model: "Product",
       key: "id",
     },
   },
@@ -43,7 +45,7 @@ const ProductSize = sequelize.define<ProductSizeInstance>("ProductSize", {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: "Colors",
+      model: "Color",
       key: "id",
     },
   },
@@ -54,5 +56,6 @@ const ProductSize = sequelize.define<ProductSizeInstance>("ProductSize", {
 }, {
     tableName: "ProductSize"
 });
+
 
 export default ProductSize;

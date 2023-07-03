@@ -1,6 +1,7 @@
 import { DataTypes, Model, Optional, Sequelize, UUID, UUIDV4 } from "sequelize";
 import { sequelize } from "../config/connectDatabase";
 import Size from "./size.model";
+import ProductSize from "./productSize.model";
 
 export interface ColorAttributes {
   id: string;
@@ -48,13 +49,13 @@ const Color = sequelize.define<ColorInstance>(
 );
 
 Color.belongsToMany(Size, {
-  through: "ProductSize",
+  through: ProductSize,
   foreignKey: "colorId",
   otherKey: "sizeId",
   as: "sizes",
 });
 Size.belongsToMany(Color, {
-  through: "ProductSize",
+  through: ProductSize,
   foreignKey: "sizeId",
   otherKey: "colorId",
   as: "colors",

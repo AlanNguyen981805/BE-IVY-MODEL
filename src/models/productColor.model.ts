@@ -28,7 +28,7 @@ const ProductColor = sequelize.define<ProductColorInstance>(
       type: DataTypes.UUID,
       allowNull: false,
       references: {
-        model: "Colors",
+        model: "Color",
         key: "id",
       },
     },
@@ -36,7 +36,7 @@ const ProductColor = sequelize.define<ProductColorInstance>(
       type: DataTypes.UUID,
       allowNull: false,
       references: {
-        model: "Products",
+        model: "Product",
         key: "id",
       },
     },
