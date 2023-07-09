@@ -99,10 +99,23 @@ Product.belongsToMany(Color, {
 Color.belongsToMany(Product, {
   through: ProductColor,
   foreignKey: "colorId",
-  as: "Product",
+  as: "products",
 });
 
-ProductSize.belongsTo(Product, { foreignKey: "productId" });
+Product.belongsToMany(Size, {
+  through: ProductSize,
+  foreignKey: "productId",
+  otherKey: "sizeId",
+  as: "sizes",
+});
+
+Size.belongsToMany(Product, {
+  through: ProductSize,
+  foreignKey: "sizeId",
+  // otherKey: 'productId',
+  as: "product",
+});
+
 // Product.belongsToMany(Size, { through: ProductSize, foreignKey: 'productId', as: "Product" });
 // Size.belongsToMany(Product, { through: ProductSize, foreignKey: 'productId', as: 'Product' });
 

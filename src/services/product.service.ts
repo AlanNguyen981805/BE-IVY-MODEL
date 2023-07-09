@@ -48,17 +48,12 @@ export const getProductsService = (req: Request) =>
             as: "colors",
             attributes: ["id", "name", "code", "isActive"],
             through: { attributes: ["imgProduct"], as: "image" },
-            include: [
-              {
-                model: Size,
-                attributes: ["id", "name", "code"],
-                as: "sizes",
-                through: {
-                  attributes: ["productId", "quantity", "colorId", "id"],
-                  as: "stock",
-                },
-              },
-            ],
+          },
+          {
+            model: Size,
+            as: "sizes",
+            attributes: ["id", "name", "code"],
+            through: { attributes: ["quantity", "colorId", "sku"], as: "stock" },
           },
         ],
         limit: validPageSize,
@@ -75,6 +70,7 @@ export const getProductsService = (req: Request) =>
         },
       } as any);
     } catch (error) {
+      console.log('error :>> ', error);
       reject(error);
     }
   });
@@ -129,14 +125,12 @@ export const detailProductService = async (req: Request) =>
             as: "colors",
             attributes: ["id", "name", "code", "isActive"],
             through: { attributes: ["imgProduct"], as: "image" },
-            include: [
-              {
-                model: Size,
-                attributes: ["id", "name", "code"],
-                as: "sizes",
-                through: { attributes: ["quantity"], as: "stock" },
-              },
-            ],
+          },
+          {
+            model: Size,
+            as: "sizes",
+            attributes: ["id", "name", "code"],
+            through: { attributes: ["quantity", "colorId", "sku"], as: "stock" },
           },
         ],
       });
@@ -198,6 +192,7 @@ const convertAttribute = (attribute: IAttribute[], productId: string) => {
         productId,
         sizeId: size.id,
         quantity: size.quantity,
+        sku: ''
       });
     });
   });

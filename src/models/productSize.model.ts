@@ -1,13 +1,12 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/connectDatabase";
-import Size from "./size.model";
-import Product from "./product.model";
 
 export interface ProductSizeAttributes {
   id: string;
   sizeId: string;
   productId: string;
   colorId: string;
+  sku: string;
   quantity: number | null
 }
 
@@ -40,6 +39,9 @@ const ProductSize = sequelize.define<ProductSizeInstance>("ProductSize", {
       model: "Product",
       key: "id",
     },
+  },
+  sku: {
+    type: DataTypes.STRING,
   },
   colorId: {
     type: DataTypes.UUID,

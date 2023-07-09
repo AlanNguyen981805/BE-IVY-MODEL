@@ -48,16 +48,16 @@ const Color = sequelize.define<ColorInstance>(
   }
 );
 
-Color.belongsToMany(Size, {
-  through: ProductSize,
-  foreignKey: "colorId",
-  otherKey: "sizeId",
-  as: "sizes",
-});
-Size.belongsToMany(Color, {
-  through: ProductSize,
-  foreignKey: "sizeId",
-  otherKey: "colorId",
-  as: "colors",
-});
+// Color.belongsToMany(Size, {
+//   through: ProductSize,
+//   foreignKey: "colorId",
+//   otherKey: "sizeId",
+//   as: "sizes",
+// });
+// Size.belongsToMany(Color, {
+//   through: ProductSize,
+//   foreignKey: "sizeId",
+//   otherKey: "colorId",
+//   as: "colors",
+// });
 export default Color;
