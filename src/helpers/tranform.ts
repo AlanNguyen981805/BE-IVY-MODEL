@@ -33,3 +33,29 @@ export const buildTree = (
 
   return tree;
 };
+
+export function generateSKU() {
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const digits = "0123456789";
+  let sku = "";
+
+  // Generate 3 uppercase letters
+  for (let i = 0; i < 3; i++) {
+    const randomChar = characters.charAt(
+      Math.floor(Math.random() * characters.length)
+    );
+    sku += randomChar;
+  }
+
+  // Generate 5 digits
+  for (let i = 0; i < 5; i++) {
+    const randomDigit = digits.charAt(
+      Math.floor(Math.random() * digits.length)
+    );
+    sku += randomDigit;
+  }
+
+  return sku;
+}
+
+const sku = generateSKU();

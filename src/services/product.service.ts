@@ -12,6 +12,7 @@ import ProductSize, {
 import { v4 as uuidV4 } from "uuid";
 import { sequelize } from "../config/connectDatabase";
 import { Op, Sequelize } from "sequelize";
+import { generateSKU } from "../helpers/tranform";
 
 export const getProductsService = (req: Request) =>
   new Promise(async (resolve, reject) => {
@@ -192,7 +193,7 @@ const convertAttribute = (attribute: IAttribute[], productId: string) => {
         productId,
         sizeId: size.id,
         quantity: size.quantity,
-        sku: ''
+        sku: generateSKU()
       });
     });
   });
