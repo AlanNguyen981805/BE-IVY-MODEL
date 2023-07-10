@@ -18,7 +18,27 @@ export const getProductsService = (req: Request) =>
   new Promise(async (resolve, reject) => {
     try {
       const { category } = req.params;
-      const { page, pageSize } = req.query;
+      const {
+        page,
+        pageSize,
+        productName,
+        listColors,
+        listSizes,
+        sortPrice,
+        maxPrice,
+        sortByCreated,
+        minPrice,
+      }: {
+        page?: string;
+        pageSize?: string;
+        productName?: string;
+        listColors?: string;
+        listSizes?: string;
+        sortPrice?: string;
+        sortByCreated?: string;
+        minPrice?: string;
+        maxPrice?: string;
+      } = req.query;
 
       let validPageSize = parseInt((pageSize as string) || "10");
       let validPage = parseInt((page as string) || "1");
@@ -37,11 +57,23 @@ export const getProductsService = (req: Request) =>
         return;
       }
 
-      const whereCondition: { cateId?: string } = {};
+      const whereCondition: any = {};
       if (category) {
         whereCondition.cateId = category;
       }
-      const products = await Product.findAll({
+      if (productName) {
+        whereCondition.title = {
+          [Op.like]: `%${productName}%`,
+        };
+      }
+      if (minPrice && maxPrice) {
+        whereCondition.price = {
+          [Op.between]: [String(minPrice), String(maxPrice)],
+        };
+      }
+
+      const query: any = {
+        distinct: true,
         where: whereCondition,
         include: [
           {
@@ -49,20 +81,45 @@ export const getProductsService = (req: Request) =>
             as: "colors",
             attributes: ["id", "name", "code", "isActive"],
             through: { attributes: ["imgProduct"], as: "image" },
+            where:
+              listColors && listColors?.length > 0
+                ? {
+                    id: {
+                      [Op.in]: listColors.split(","),
+                    },
+                  }
+                : {},
           },
           {
             model: Size,
             as: "sizes",
             attributes: ["id", "name", "code"],
-            through: { attributes: ["quantity", "colorId", "sku"], as: "stock" },
+            through: {
+              attributes: ["quantity", "colorId", "sku"],
+              as: "stock",
+            },
+            where:
+              listSizes && listSizes?.length > 0
+                ? {
+                    id: {
+                      [Op.in]: listSizes.split(","),
+                    },
+                  }
+                : {},
           },
+        ],
+        order: [
+          ["price", sortPrice?.toUpperCase() === "ASC" ? "ASC" : "DESC"],
+          [
+            "createdAt",
+            sortByCreated?.toUpperCase() === "ASC" ? "ASC" : "DESC",
+          ],
         ],
         limit: validPageSize,
         offset: (validPage - 1) * validPageSize,
-      });
-      const totalCount = await Product.count({
-        where: whereCondition,
-      });
+      };
+      const products = await Product.findAll(query);
+      const totalCount = await Product.count(query);
 
       resolve({
         data: {
@@ -71,7 +128,7 @@ export const getProductsService = (req: Request) =>
         },
       } as any);
     } catch (error) {
-      console.log('error :>> ', error);
+      console.log("error :>> ", error);
       reject(error);
     }
   });
@@ -131,7 +188,10 @@ export const detailProductService = async (req: Request) =>
             model: Size,
             as: "sizes",
             attributes: ["id", "name", "code"],
-            through: { attributes: ["quantity", "colorId", "sku"], as: "stock" },
+            through: {
+              attributes: ["quantity", "colorId", "sku"],
+              as: "stock",
+            },
           },
         ],
       });
@@ -193,7 +253,7 @@ const convertAttribute = (attribute: IAttribute[], productId: string) => {
         productId,
         sizeId: size.id,
         quantity: size.quantity,
-        sku: generateSKU()
+        sku: generateSKU(),
       });
     });
   });
