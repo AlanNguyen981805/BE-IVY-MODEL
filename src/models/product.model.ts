@@ -116,6 +116,29 @@ Size.belongsToMany(Product, {
   as: "product",
 });
 
+// Product Model
+Product.hasMany(ProductSize, {
+  foreignKey: "productId",
+  as: "listSizes",
+});
+
+// Size Model
+ProductSize.belongsTo(Product, {
+  foreignKey: "productId",
+  as: "listSizes",
+});
+
+Size.hasMany(ProductSize, {
+  foreignKey: "sizeId",
+  as: "size"
+});
+
+// Size Model
+ProductSize.belongsTo(Size, {
+  foreignKey: "sizeId",
+  as: "size"
+});
+
 // Product.belongsToMany(Size, { through: ProductSize, foreignKey: 'productId', as: "Product" });
 // Size.belongsToMany(Product, { through: ProductSize, foreignKey: 'productId', as: 'Product' });
 
