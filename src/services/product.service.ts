@@ -118,7 +118,54 @@ export const getProductsService = (req: Request) =>
         limit: validPageSize,
         offset: (validPage - 1) * validPageSize,
       };
-      const products = await Product.findAll(query);
+      const products = await Product.findAll({
+        where: whereCondition,
+        include: [
+          {
+            model: Color,
+            as: "colors",
+            attributes: ["id", "name", "code", "isActive"],
+            through: { attributes: ["imgProduct"], as: "image" },
+            where:
+              listColors && listColors?.length > 0
+                ? {
+                    id: {
+                      [Op.in]: listColors.split(","),
+                    },
+                  }
+                : {},
+          },
+          {
+            model: ProductSize,
+            attributes: ["sku", "quantity", "colorId"],
+            as: "listSizes",
+            include: [
+              {
+                model: Size,
+                attributes: ["id", "name"],
+                as: "size",
+              },
+            ],
+            where:
+              listSizes && listSizes?.length > 0
+                ? {
+                    sizeId: {
+                      [Op.in]: listSizes.split(","),
+                    },
+                  }
+                : {},
+          },
+        ],
+        order: [
+          ["price", sortPrice?.toUpperCase() === "ASC" ? "ASC" : "DESC"],
+          [
+            "createdAt",
+            sortByCreated?.toUpperCase() === "ASC" ? "ASC" : "DESC",
+          ],
+        ],
+        limit: validPageSize,
+        offset: (validPage - 1) * validPageSize,
+      });
       const totalCount = await Product.count(query);
 
       resolve({
@@ -185,13 +232,16 @@ export const detailProductService = async (req: Request) =>
             through: { attributes: ["imgProduct"], as: "image" },
           },
           {
-            model: Size,
-            as: "sizes",
-            attributes: ["id", "name", "code"],
-            through: {
-              attributes: ["quantity", "colorId", "sku"],
-              as: "stock",
-            },
+            model: ProductSize,
+            attributes: ["sku", "quantity", "colorId"],
+            as: "listSizes",
+            include: [
+              {
+                model: Size,
+                attributes: ["id", "name"],
+                as: "size",
+              },
+            ],
           },
         ],
       });

@@ -10,4 +10,13 @@ export const createColor = async (req: Request, res: Response) => {
   }
 };
 
+export const getColors = async (req: Request, res: Response) => {
+  try {
+    const response = await services.getColorService(req)
+    return res.status(200).json(response)
+  } catch (error: any) {
+    return res.status(500).json(error);
+  }
+};
+
 

@@ -23,3 +23,21 @@ export const createColorService = (req: Request) =>
       reject(error);
     }
   });
+
+export const getColorService = (req: Request) =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const listColors = await Color.findAll({
+        attributes: ["id", "name", "code"],
+      });
+      if (listColors) {
+        resolve({
+          error: listColors ? 0 : 1,
+          message: listColors ? "OK" : "Fail to get colors",
+          data: listColors,
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
