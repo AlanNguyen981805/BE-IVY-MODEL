@@ -13,6 +13,7 @@ import { v4 as uuidV4 } from "uuid";
 import { sequelize } from "../config/connectDatabase";
 import { Op, Sequelize } from "sequelize";
 import { generateSKU } from "../helpers/tranform";
+import Favorite from "../models/favorite.model";
 
 export const getProductsService = (req: Request) =>
   new Promise(async (resolve, reject) => {
@@ -72,54 +73,19 @@ export const getProductsService = (req: Request) =>
         };
       }
 
-      const query: any = {
+      const products = await Product.findAndCountAll({
         distinct: true,
         where: whereCondition,
-        include: [
-          {
-            model: Color,
-            as: "colors",
-            attributes: ["id", "name", "code", "isActive"],
-            through: { attributes: ["imgProduct"], as: "image" },
-            where:
-              listColors && listColors?.length > 0
-                ? {
-                    id: {
-                      [Op.in]: listColors.split(","),
-                    },
-                  }
-                : {},
-          },
-          {
-            model: Size,
-            as: "sizes",
-            attributes: ["id", "name", "code"],
-            through: {
-              attributes: ["quantity", "colorId", "sku"],
-              as: "stock",
-            },
-            where:
-              listSizes && listSizes?.length > 0
-                ? {
-                    id: {
-                      [Op.in]: listSizes.split(","),
-                    },
-                  }
-                : {},
-          },
-        ],
-        order: [
-          ["price", sortPrice?.toUpperCase() === "ASC" ? "ASC" : "DESC"],
-          [
-            "createdAt",
-            sortByCreated?.toUpperCase() === "ASC" ? "ASC" : "DESC",
+        attributes: {
+          exclude: [
+            "stock",
+            "intro",
+            "description",
+            "preserve",
+            "star",
+            "sku"
           ],
-        ],
-        limit: validPageSize,
-        offset: (validPage - 1) * validPageSize,
-      };
-      const products = await Product.findAll({
-        where: whereCondition,
+        },
         include: [
           {
             model: Color,
@@ -166,12 +132,9 @@ export const getProductsService = (req: Request) =>
         limit: validPageSize,
         offset: (validPage - 1) * validPageSize,
       });
-      const totalCount = await Product.count(query);
-
       resolve({
         data: {
           products,
-          total: totalCount,
         },
       } as any);
     } catch (error) {
@@ -313,3 +276,118 @@ const convertAttribute = (attribute: IAttribute[], productId: string) => {
     productSize,
   };
 };
+
+export const createFavoriteProduct = (req: any) =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const { idProduct } = req.params;
+      const { id } = req.user;
+      if (!id && !idProduct) {
+        resolve({
+          error: 1,
+          message: "Missing inputs",
+        });
+      }
+      const response = await Favorite.create({
+        id: uuidV4(),
+        productId: idProduct,
+        userId: id,
+      });
+      resolve({
+        err: response ? 0 : 1,
+        msg: response ? "OK" : "Failed to create favorite",
+        response,
+      });
+    } catch (error) {
+      console.log("error :>> ", error);
+      reject(error);
+    }
+  });
+
+export const deleteFavoriteService = (req: any) =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const { idProduct } = req.params;
+      const { id } = req.user;
+      if (!id && !idProduct) {
+        resolve({
+          error: 1,
+          message: "Missing inputs",
+        });
+      }
+
+      const response = await Favorite.destroy({ where: { id: idProduct } });
+      resolve({
+        error: response ? 0 : 1,
+        message: response ? "OK" : "Failed to delete favorite",
+        response,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+
+export const getFavoritesService = (req: any) =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const { id } = req.user;
+      if (!id) {
+        reject({
+          error: 1,
+          message: "Can't find user",
+        });
+      }
+      const response = await Favorite.findAndCountAll({
+        distinct: true,
+        where: { userId: id },
+        attributes: ["id"],
+        nest: true,
+        include: [
+          {
+            model: Product,
+            as: "products",
+            attributes: {
+              exclude: [
+                "createdAt",
+                "updatedAt",
+                "intro",
+                "description",
+                "preserve",
+                "star",
+                "sku",
+                "cateId",
+              ],
+            },
+            include: [
+              {
+                model: Color,
+                as: "colors",
+                attributes: ["id", "name", "code", "isActive"],
+                through: { attributes: ["imgProduct"], as: "image" },
+              },
+              {
+                model: ProductSize,
+                attributes: ["sku", "quantity", "colorId"],
+                as: "listSizes",
+                include: [
+                  {
+                    model: Size,
+                    attributes: ["id", "name"],
+                    as: "size",
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+
+      resolve({
+        error: response ? 0 : 1,
+        data: response,
+      });
+    } catch (error) {
+      console.log("error :>> ", error);
+      reject(error);
+    }
+  });

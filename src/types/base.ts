@@ -3,3 +3,8 @@ export interface IResponse<T> {
   message: string;
   data: T | T[];
 }
+
+export enum GENDER {
+  NAM = 1,
+  NU = 2,
+}
