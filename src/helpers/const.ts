@@ -9,7 +9,8 @@ export const DOMAIN = {
   SIZE: api + "/size",
   COLOR: api + "/color",
   SLIDER: api + "/slider",
-  SETTING: api + "/setting"
+  SETTING: api + "/setting",
+  AUTH: api + "/auth"
 };
 
 export const INFO_RESPONSE = {
