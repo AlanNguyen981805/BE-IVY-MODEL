@@ -12,13 +12,15 @@ import ProductSize, {
 import { v4 as uuidV4 } from "uuid";
 import { sequelize } from "../config/connectDatabase";
 import { Op, Sequelize } from "sequelize";
-import { generateSKU } from "../helpers/tranform";
+import { generateSKU, verifyUser } from "../helpers/tranform";
 import Favorite from "../models/favorite.model";
+import jwt from "jsonwebtoken";
 
 export const getProductsService = (req: Request) =>
   new Promise(async (resolve, reject) => {
     try {
       const { category } = req.params;
+      let idUser = await verifyUser(req.headers.authorization || "");
       const {
         page,
         pageSize,
@@ -77,14 +79,19 @@ export const getProductsService = (req: Request) =>
         distinct: true,
         where: whereCondition,
         attributes: {
-          exclude: [
-            "stock",
-            "intro",
-            "description",
-            "preserve",
-            "star",
-            "sku"
-          ],
+          exclude: ["stock", "intro", "description", "preserve", "star", "sku"],
+          include: idUser
+            ? [
+                [
+                  Sequelize.literal(`(
+              SELECT COUNT(*)
+              FROM "Favorite"
+              WHERE "Favorite"."productId" = "Product"."id" AND "Favorite"."userId" = '${idUser}'
+            )`),
+                  "isFavorite",
+                ],
+              ]
+            : [],
         },
         include: [
           {
@@ -316,7 +323,9 @@ export const deleteFavoriteService = (req: any) =>
         });
       }
 
-      const response = await Favorite.destroy({ where: { id: idProduct } });
+      const response = await Favorite.destroy({
+        where: { productId: idProduct, userId: id },
+      });
       resolve({
         error: response ? 0 : 1,
         message: response ? "OK" : "Failed to delete favorite",
@@ -340,12 +349,11 @@ export const getFavoritesService = (req: any) =>
       const response = await Favorite.findAndCountAll({
         distinct: true,
         where: { userId: id },
-        attributes: ["id"],
-        nest: true,
+        attributes: [],
         include: [
           {
             model: Product,
-            as: "products",
+            as: "product",
             attributes: {
               exclude: [
                 "createdAt",
@@ -357,6 +365,7 @@ export const getFavoritesService = (req: any) =>
                 "sku",
                 "cateId",
               ],
+              include: [[Sequelize.literal("'1'"), "isFavorite"]],
             },
             include: [
               {
