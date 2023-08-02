@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import { CategoryAttributes } from "../models/category.model";
 import { ICategory } from "../types/category.type";
 
@@ -58,4 +59,14 @@ export function generateSKU() {
   return sku;
 }
 
-const sku = generateSKU();
+export function verifyUser(token: string) {
+  let idUser = "";
+  let accessToken = token?.split(" ")[1];
+  if (!accessToken) return false;
+
+  jwt.verify(accessToken, "secret_key", (err: any, user: any) => {
+    if (err) return false;
+    idUser = user.id;
+  });
+  return idUser;
+}

@@ -46,10 +46,5 @@ const Favorite = sequelize.define<FavoriteInstance>(
   }
 );
 
-Favorite.belongsTo(Product, {
-  foreignKey: 'productId',
-  targetKey: 'id',
-  as: "products"
-})
 
 export default Favorite;
