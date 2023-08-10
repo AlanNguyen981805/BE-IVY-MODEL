@@ -10,7 +10,8 @@ export const DOMAIN = {
   COLOR: api + "/color",
   SLIDER: api + "/slider",
   SETTING: api + "/setting",
-  AUTH: api + "/auth"
+  AUTH: api + "/auth",
+  PAYMENT: api + "/payment"
 };
 
 export const INFO_RESPONSE = {
