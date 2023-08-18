@@ -5,6 +5,7 @@ import ProductColor from "./productColor.model";
 import ProductSize from "./productSize.model";
 import Size from "./size.model";
 import Favorite from "./favorite.model";
+import Order from "./order.model";
 
 export interface ProductAttributes {
   id?: string;
@@ -131,23 +132,27 @@ ProductSize.belongsTo(Product, {
 
 Size.hasMany(ProductSize, {
   foreignKey: "sizeId",
-  as: "size"
+  as: "size",
 });
 
 // Size Model
 ProductSize.belongsTo(Size, {
   foreignKey: "sizeId",
-  as: "size"
+  as: "size",
 });
 
-Product.belongsToMany(Favorite, { through: "Favorite", foreignKey: "productId" });
+Product.belongsToMany(Favorite, {
+  through: "Favorite",
+  foreignKey: "productId",
+});
 Favorite.belongsToMany(Product, { through: "Favorite", foreignKey: "userId" });
 
 Favorite.belongsTo(Product, {
-  foreignKey: 'productId',
-  targetKey: 'id',
-  as: "product"
-})
+  foreignKey: "productId",
+  targetKey: "id",
+  as: "product",
+});
+
 // Product.belongsToMany(Size, { through: ProductSize, foreignKey: 'productId', as: "Product" });
 // Size.belongsToMany(Product, { through: ProductSize, foreignKey: 'productId', as: 'Product' });
 

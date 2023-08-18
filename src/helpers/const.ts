@@ -11,10 +11,11 @@ export const DOMAIN = {
   SLIDER: api + "/slider",
   SETTING: api + "/setting",
   AUTH: api + "/auth",
-  PAYMENT: api + "/payment"
+  PAYMENT: api + "/payment",
+  ORDER: api + "/order",
 };
 
 export const INFO_RESPONSE = {
-    SUCCESS: 1,
-    ERROR: 0
-}
+  SUCCESS: 1,
+  ERROR: 0,
+};

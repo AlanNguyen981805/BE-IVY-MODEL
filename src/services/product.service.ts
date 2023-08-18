@@ -84,10 +84,10 @@ export const getProductsService = (req: Request) =>
             ? [
                 [
                   Sequelize.literal(`(
-              SELECT COUNT(*)
-              FROM "Favorite"
-              WHERE "Favorite"."productId" = "Product"."id" AND "Favorite"."userId" = '${idUser}'
-            )`),
+            SELECT COUNT(*)
+            FROM "Favorite"
+            WHERE "Favorite"."productId" = "Product"."id" AND "Favorite"."userId" = '${idUser}'
+          )`),
                   "isFavorite",
                 ],
               ]
@@ -148,7 +148,7 @@ export const getProductsService = (req: Request) =>
       console.log("error :>> ", error);
       reject(error);
     }
-  });
+});
 
 export const createProductService = async (req: Request) => {
   const transaction = await sequelize.transaction();
@@ -230,7 +230,7 @@ export const detailProductService = async (req: Request) =>
     } catch (error) {
       reject(error);
     }
-  });
+});
 
 const checkValidBodyProduct = (body: IBodyProduct) => {
   const {
