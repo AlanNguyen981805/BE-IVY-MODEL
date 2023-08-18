@@ -16,6 +16,12 @@ module.exports = {
       sizeId: {
         type: Sequelize.UUID
       },
+      // sku: {
+      //   type: Sequelize.STRING,
+      //   primaryKey: true,
+      //   unique: true,
+      //   autoIncrement: false,
+      // },
       productId: {
         type: Sequelize.UUID,
       },

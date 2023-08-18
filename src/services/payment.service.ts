@@ -29,11 +29,12 @@ export const createPaymentService = (req: Request, res: Response) =>
         const orderInfo = infoOrder;
         const partnerCode = process.env.PAYMENT_TYPE || "";
         const redirectUrl = successPage + "?type=momo";
-        const ipnUrl = successPage + "?type=momo";
+        const ipnUrl = "http://localhost:8888/api/v1/payment/result-payment";
         const requestType = "payWithATM";
         const amount = price;
         const orderId = partnerCode + new Date().getTime();
         const requestId = orderId;
+        const notifyUrl = "http://localhost:8888/api/v1/payment/result-payment";
         const extraData = "";
         const paymentCode =
           "T8Qii53fAXyUftPV3m9ysyRhEanUs9KlOPfHgpMR0ON50U10Bh+vZdpJU7VY4z+Z2y77fJHkoDc69scwwzLuW5MzeUKTwPo3ZMaB29imm6YulqnWfTkgzqRaion+EuD7FN9wZ4aXE1+mRt0gHsU193y+yxtRgpmY7SDMU9hCKoQtYyHsfFR5FUAOAKMdw2fzQqpToei3rnaYvZuYaxolprm9+/+WIETnPUDlxCYOiw7vPeaaYQQH0BF0TxyU3zu36ODx980rJvPAgtJzH1gUrlxcSS1HQeQ9ZaVM1eOK/jl8KJm6ijOwErHGbgf/hVymUQG65rHU2MWz9U8QUjvDWA==";
@@ -89,6 +90,7 @@ export const createPaymentService = (req: Request, res: Response) =>
           extraData: extraData,
           orderGroupId: orderGroupId,
           signature: signature,
+          notifyUrl: notifyUrl,
         });
         const options = {
           hostname: "test-payment.momo.vn",
@@ -111,12 +113,21 @@ export const createPaymentService = (req: Request, res: Response) =>
             console.log("resultCode: ");
             console.log(JSON.parse(body).resultCode);
           });
-          reqPayment.on("end", () => {
-            console.log("No more data in response.");
+          reqPayment.on("end", (data) => {
+            console.log("No more data in response.", data);
           });
         });
-        reqPayment.on("error", (e) => {
-          console.log(`problem with request: ${e.message}`);
+        reqPayment.on("close", (e: any) => {
+          console.log(`problem with request: ${e}`);
+        });
+        reqPayment.on("information", (e: any) => {
+          console.log(`information: ${e}`);
+        });
+        reqPayment.on("response", (e: any) => {
+          console.log(`response: ${e}`);
+        });
+        reqPayment.on("finish", (e: any) => {
+          console.log(`finish: ${e}`);
         });
         // write data to request body
         console.log("Sending....");
@@ -125,11 +136,10 @@ export const createPaymentService = (req: Request, res: Response) =>
       }
 
       if (type === "VNPAY") {
-        console.log("req.body :>> ", req.body);
         var ipAddr = "127.0.0.1";
 
-        var tmnCode = "CGXZLS0Z";
-        var secretKey = "XNBCJFAKAZQSGTARRLGCHVZWCIOIGSHN";
+        var tmnCode = "NOQWBF3M";
+        var secretKey = "LFAWWKMFKGVWETXRPABVPYLOPWSOVEUF";
         var vnpUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
         var returnUrl = successPage + "?type=vnpay";
 
@@ -172,7 +182,6 @@ export const createPaymentService = (req: Request, res: Response) =>
         var signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
         vnp_Params["vnp_SecureHash"] = signed;
 
-        console.log("signed :>> ", signed);
         vnpUrl += "?" + querystring.stringify(vnp_Params, { encode: false });
 
         resolve({
@@ -184,6 +193,15 @@ export const createPaymentService = (req: Request, res: Response) =>
       console.log("error :>> ", error);
       reject(error);
     }
+  });
+
+export const resultPaymentService = (req: Request, res: Response) =>
+  new Promise(async (resolve, reject) => {
+    console.log("response momo ipn :>> ", req);
+    resolve({
+      error: 0,
+      data: "recive payment",
+    });
   });
 
 function sortObject(obj: any) {
@@ -201,3 +219,11 @@ function sortObject(obj: any) {
   }
   return sorted;
 }
+
+export const ipnPaymentService = (req: Request, res: Response) =>
+  new Promise(async (resolve, reject) => {
+    resolve({
+      error: 0,
+      data: "test ipn",
+    });
+  });

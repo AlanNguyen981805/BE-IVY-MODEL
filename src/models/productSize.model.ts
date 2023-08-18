@@ -21,7 +21,6 @@ const ProductSize = sequelize.define<ProductSizeInstance>("ProductSize", {
   id: {
     allowNull: false,
     autoIncrement: false,
-    primaryKey: true,
     type: DataTypes.UUID,
   },
   sizeId: {
@@ -42,6 +41,7 @@ const ProductSize = sequelize.define<ProductSizeInstance>("ProductSize", {
   },
   sku: {
     type: DataTypes.STRING,
+    primaryKey: true
   },
   colorId: {
     type: DataTypes.UUID,
